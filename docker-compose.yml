@@ -1,0 +1,208 @@
+name: lumina-django
+
+services:
+  # ── PostgreSQL dengan pgvector ──────────────────────────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: lumina-django-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lumina
+      POSTGRES_USER: lumina
+      POSTGRES_PASSWORD: lumina_secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "lumina", "-d", "lumina"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis broker untuk Celery ───────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: lumina-django-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend (Django) ────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: lumina-backend:latest
+    container_name: lumina-django-backend
+    restart: unless-stopped
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+      - ./models:/app/models
+      - backend_app_data:/app/backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      DJANGO_ENV: development
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "*"
+      DB_NAME: lumina
+      DB_USER: lumina
+      DB_PASSWORD: lumina_secret
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_TASK_TIME_LIMIT: ${CELERY_TASK_TIME_LIMIT:-3900}
+      CELERY_TASK_SOFT_TIME_LIMIT: ${CELERY_TASK_SOFT_TIME_LIMIT:-3600}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MAX_ATTEMPTS: ${GEMINI_MAX_ATTEMPTS:-2}
+      GEMINI_RETRY_DELAY_SECONDS: ${GEMINI_RETRY_DELAY_SECONDS:-1}
+      VISION_ENABLED: ${VISION_ENABLED:-False}
+      GEMINI_VISION_MODEL: ${GEMINI_VISION_MODEL:-gemini-3.1-flash-lite}
+      HF_TOKEN: ${HF_TOKEN:-}
+      HF_HOME: /app/models/huggingface
+      TRANSFORMERS_CACHE: /app/models/huggingface/hub
+      SENTENCE_TRANSFORMERS_HOME: /app/models/sentence_transformers
+      TORCH_HOME: /app/models/torch
+      EMBEDDING_MODEL_CACHE_DIR: /app/models
+      HF_HUB_ENABLE_HF_TRANSFER: "0"
+      HF_HUB_DISABLE_XET: "1"
+      RUN_WARMUP: "1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Celery Worker ───────────────────────────────────────────────────────────
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: lumina-backend:latest
+    container_name: lumina-django-celery
+    restart: unless-stopped
+    mem_limit: 4g
+    command: celery -A lumina worker --loglevel=info --concurrency=1
+    volumes:
+      - ./backend:/app
+      - ./models:/app/models
+      - celery_app_data:/app/backend
+    env_file:
+      - ./backend/.env
+    environment:
+      DJANGO_ENV: development
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "*"
+      DB_NAME: lumina
+      DB_USER: lumina
+      DB_PASSWORD: lumina_secret
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_TASK_TIME_LIMIT: ${CELERY_TASK_TIME_LIMIT:-3900}
+      CELERY_TASK_SOFT_TIME_LIMIT: ${CELERY_TASK_SOFT_TIME_LIMIT:-3600}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      VISION_ENABLED: ${VISION_ENABLED:-False}
+      GEMINI_VISION_MODEL: ${GEMINI_VISION_MODEL:-gemini-3.1-flash-lite}
+      OCR_USE_DOC_ORIENTATION: ${OCR_USE_DOC_ORIENTATION:-False}
+      OCR_USE_DOC_UNWARPING: ${OCR_USE_DOC_UNWARPING:-False}
+      OCR_USE_TEXTLINE_ORIENTATION: ${OCR_USE_TEXTLINE_ORIENTATION:-True}
+      VISION_DOCX_MAX_IMAGES: ${VISION_DOCX_MAX_IMAGES:-15}
+      HF_TOKEN: ${HF_TOKEN:-}
+      HF_HOME: /app/models/huggingface
+      TRANSFORMERS_CACHE: /app/models/huggingface/hub
+      SENTENCE_TRANSFORMERS_HOME: /app/models/sentence_transformers
+      TORCH_HOME: /app/models/torch
+      EMBEDDING_MODEL_CACHE_DIR: /app/models
+      HF_HUB_ENABLE_HF_TRANSFER: "0"
+      HF_HUB_DISABLE_XET: "1"
+      RUN_WARMUP: "1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Celery Beat Scheduler ───────────────────────────────────────────────────
+  celery-beat:
+    profiles: ["maintenance"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: lumina-backend:latest
+    container_name: lumina-django-celery-beat
+    restart: unless-stopped
+    command: celery -A lumina beat --loglevel=info --schedule /tmp/celerybeat-schedule
+    volumes:
+      - ./backend:/app
+      - ./models:/app/models
+      - celery_beat_data:/tmp
+    env_file:
+      - ./backend/.env
+    environment:
+      DJANGO_ENV: development
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "*"
+      DB_NAME: lumina
+      DB_USER: lumina
+      DB_PASSWORD: lumina_secret
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      # Opt-in: ketika True, gambar dokumen dikirim ke Gemini Vision.
+      VISION_ENABLED: ${VISION_ENABLED:-False}
+      GEMINI_VISION_MODEL: ${GEMINI_VISION_MODEL:-gemini-3.1-flash-lite}
+      HF_TOKEN: ${HF_TOKEN:-}
+      HF_HOME: /app/models/huggingface
+      TRANSFORMERS_CACHE: /app/models/huggingface/hub
+      SENTENCE_TRANSFORMERS_HOME: /app/models/sentence_transformers
+      TORCH_HOME: /app/models/torch
+      EMBEDDING_MODEL_CACHE_DIR: /app/models
+      HF_HUB_ENABLE_HF_TRANSFER: "0"
+      HF_HUB_DISABLE_XET: "1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Frontend (Next.js) ──────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lumina-django-frontend
+    restart: unless-stopped
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api
+    depends_on:
+      - backend
+
+volumes:
+  pgvector_data:
+  backend_app_data:
+  celery_app_data:
+  celery_beat_data:

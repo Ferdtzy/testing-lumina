@@ -1,0 +1,36 @@
+name: lumina-redesign
+
+services:
+  postgres:
+    container_name: lumina-redesign-postgres
+  redis:
+    container_name: lumina-redesign-redis
+  backend:
+    container_name: lumina-redesign-backend
+    image: lumina-ocr-integration:local
+    volumes:
+      - model_cache:/app/models
+      - ./models/paddlex:/root/.paddlex
+    environment:
+      RUN_WARMUP: '0'
+      EMBEDDING_BATCH_SIZE: '2'
+  celery:
+    container_name: lumina-redesign-celery
+    image: lumina-ocr-integration:local
+    volumes:
+      - model_cache:/app/models
+      - ./models/paddlex:/root/.paddlex
+    command: celery -A lumina worker --loglevel=info --concurrency=1 --prefetch-multiplier=1
+    environment:
+      RUN_WARMUP: '0'
+      EMBEDDING_BATCH_SIZE: '2'
+  celery-beat:
+    container_name: lumina-redesign-celery-beat
+    image: lumina-ocr-integration:local
+    volumes:
+      - ./models/paddlex:/root/.paddlex
+  frontend:
+    container_name: lumina-redesign-frontend
+
+volumes:
+  model_cache:

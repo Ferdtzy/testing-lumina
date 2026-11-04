@@ -1,0 +1,50 @@
+[
+  {
+    "id": "pdf-course-code",
+    "document_name": "Soal_IPPL2.pdf",
+    "sha256": "6edd534707e7c7be1e606b47e4435037c2f64d4ef9b0b67957c5c500538ee56e",
+    "question": "Menurut dokumen Soal IPPL2, apa kode mata kuliahnya?",
+    "expected_terms": ["IF421"],
+    "evidence": "Kode Mata Kuliah: IF421"
+  },
+  {
+    "id": "pdf-duration",
+    "document_name": "Soal_IPPL2.pdf",
+    "sha256": "6edd534707e7c7be1e606b47e4435037c2f64d4ef9b0b67957c5c500538ee56e",
+    "question": "Menurut dokumen Soal IPPL2, berapa waktu pengerjaan yang diberikan?",
+    "expected_terms": ["120", "menit"],
+    "evidence": "Waktu: 120 menit"
+  },
+  {
+    "id": "docx-normalization-purpose",
+    "document_name": "5684_MANUALBOOK-PBL_20251231.docx",
+    "sha256": "14d62515cd1688e37f3ed1e545f03ed0b70a86ce0ee4b2be973bca8c92ce63b7",
+    "question": "Apa tujuan fitur Normalisasi Data menurut manual?",
+    "expected_terms": ["skala", "seragam"],
+    "evidence": "menyesuaikan skala nilai fitur agar berada pada rentang yang seragam"
+  },
+  {
+    "id": "docx-scaler-options",
+    "document_name": "5684_MANUALBOOK-PBL_20251231.docx",
+    "sha256": "14d62515cd1688e37f3ed1e545f03ed0b70a86ce0ee4b2be973bca8c92ce63b7",
+    "question": "Menurut gambar menu Normalisasi Data pada manual, apa saja pilihan Scaler Type?",
+    "expected_terms": ["standard", "minmax", "robust"],
+    "evidence": "Gambar menu Normalisasi Data: standard, minmax, robust"
+  },
+  {
+    "id": "image-birth-date",
+    "document_name": "{6FB468EA-999F-4CB3-B575-6360E0589AC9}.png",
+    "sha256": "79bb99a9730b95f4d69260ecf8cdc76e78742a7bfb0960326e29dcd7b41bac85",
+    "question": "Menurut gambar artikel Jensen Huang, kapan ia lahir?",
+    "expected_terms": ["17", "Februari", "1963"],
+    "evidence": "lahir 17 Februari 1963"
+  },
+  {
+    "id": "image-ipo-year",
+    "document_name": "{6FB468EA-999F-4CB3-B575-6360E0589AC9}.png",
+    "sha256": "79bb99a9730b95f4d69260ecf8cdc76e78742a7bfb0960326e29dcd7b41bac85",
+    "question": "Menurut gambar artikel Jensen Huang, pada tahun berapa Nvidia menjadi perusahaan publik?",
+    "expected_terms": ["1999"],
+    "evidence": "Nvidia menjadi perusahaan publik pada 1999"
+  }
+]

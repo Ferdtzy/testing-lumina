@@ -1,0 +1,273 @@
+@import "tailwindcss";
+
+:root {
+  --background: #c9e8f7;
+  --foreground: #1a3a52;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-space-grotesk);
+}
+
+.font-space-grotesk {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+* {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+body {
+  background-color: #c9e8f7;
+  background-image: url("/images/Background.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--foreground);
+}
+
+/* ── Glassmorphism panels (app) ───────────────────────────────────── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 20px;
+}
+
+.glass-inner {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Glassmorphism panels (auth / guest) ──────────────────────────── */
+.guest-glass-panel {
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 4px 24px rgba(100, 160, 200, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-radius: 20px;
+}
+
+.guest-glass-inner {
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(180, 210, 230, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.sidebar {
+  border-radius: 20px;
+}
+.header {
+  border-radius: 20px;
+}
+.upload-bar {
+  border-radius: 16px;
+}
+
+/* ── Sidebar nav ──────────────────────────────────────────────────── */
+.sidebar-nav-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.sidebar-nav-active {
+  background: rgba(219, 234, 254, 0.65);
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 111, 168, 0.2);
+  border-radius: 4px;
+}
+
+/* ── Typing indicator bounce ──────────────────────────────────────── */
+@keyframes typingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+.typing-dot {
+  animation: typingBounce 1.4s infinite;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* ── History item typing animation ─────────────────────────────────── */
+@keyframes typingFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes typingCursor {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typing-animation {
+  animation: typingFadeIn 0.4s ease-out forwards;
+  position: relative;
+}
+
+.typing-animation::after {
+  content: "|";
+  position: relative;
+  margin-left: 2px;
+  animation: typingCursor 0.8s infinite;
+  color: #3b82f6;
+  font-weight: 300;
+}
+
+/* ── Mobile drawer overlay ────────────────────────────────────────── */
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 40;
+}
+#sidebar-overlay.active {
+  display: block;
+}
+
+/* ── Mobile sidebar drawer ────────────────────────────────────────── */
+@media (max-width: 767px) {
+  #app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: 72vw;
+    max-width: 280px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    border-radius: 0 20px 20px 0;
+  }
+  #app-sidebar.open {
+    transform: translateX(0);
+  }
+  #main-content {
+    padding-bottom: 80px;
+  }
+  #main-content > main {
+    overflow: visible;
+  }
+}
+
+/* ── Bottom navigation bar — mobile only ──────────────────────────── */
+#bottom-nav {
+  display: none;
+}
+@media (max-width: 767px) {
+  #bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    z-index: 40;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+  }
+}
+
+/* ── Tablet: icon-only sidebar ────────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #app-sidebar {
+    width: 68px;
+    min-width: 68px;
+  }
+  #app-sidebar .nav-label,
+  #app-sidebar .sidebar-brand-name,
+  #app-sidebar .history-section,
+  #app-sidebar .logout-label {
+    display: none !important;
+  }
+  #app-sidebar .sidebar-logo-wrap {
+    padding: 0;
+  }
+  #app-sidebar .sidebar-logo-wrap > div {
+    width: 44px;
+    height: 36px;
+    margin: 0 auto;
+    padding: 0;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #app-sidebar .sidebar-logo-wrap img {
+    width: 36px !important;
+    height: 28px !important;
+    opacity: 0.8;
+  }
+  #app-sidebar .sidebar-nav-item {
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 0;
+  }
+  #app-sidebar nav img {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px;
+    opacity: 0.75;
+  }
+  #app-sidebar form > div {
+    justify-content: center;
+    padding: 0 4px;
+  }
+  #app-sidebar form .sidebar-nav-item {
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  #app-sidebar form img {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px;
+    opacity: 0.75;
+  }
+}

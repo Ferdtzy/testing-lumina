@@ -1,0 +1,40 @@
+# ── Core Django ────────────────────────────────────────────────────────────────
+Django>=6.1
+djangorestframework>=3.18.0
+django-cors-headers>=4.9.0
+python-dotenv>=1.2.3
+psycopg2-binary>=2.9.10
+pgvector>=0.4.0
+celery>=5.3.0
+redis>=5.0.0
+django-celery-results>=2.5.0
+
+# ── RAG / Ingest pipeline (port of Laravel ai/requirements.txt) ────────────────
+# LangChain framework
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+langchain-huggingface
+langchain-google-genai
+
+# Embedding model (intfloat/multilingual-e5-large) and Reranker (BAAI/bge-reranker-v2-m3)
+sentence-transformers
+FlagEmbedding; sys_platform != 'win32'
+faiss-cpu>=1.9.0,<2.0
+
+# Document processing (PDF/DOCX/TXT)
+pypdf
+python-docx
+docx2txt
+
+# ── OCR ────────────────────────────────────────────────────────────────
+paddleocr==3.7.0
+paddlepaddle==3.3.1
+pdf2image==1.17.0
+opencv-contrib-python==4.10.0.84
+djangorestframework-simplejwt>=5.4.0
+# MIME type detection
+# python-magic for Linux/Docker, python-magic-bin for Windows
+python-magic>=0.4.27; sys_platform != 'win32'
+python-magic-bin>=0.4.14; sys_platform == 'win32'

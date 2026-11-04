@@ -1,0 +1,49 @@
+# ── Backend .dockerignore ────────────────────────────────────────────────────
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.venv*/
+ENV/
+env.bak/
+venv.bak/
+
+# Django & Media / Local Storage
+staticfiles/
+media/
+media_test/
+documents/
+vectorstore/
+models/
+db.sqlite3
+*.log
+celerybeat-schedule*
+*.db
+*.sqlite
+*.log
+*.pdf
+*.docx
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
