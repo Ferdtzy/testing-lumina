@@ -1,0 +1,228 @@
+# _____________________________
+# Python / Django
+# _____________________________
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Django
+*.sqlite3
+*.sqlite
+db.sqlite3
+db.sqlite-journal
+
+# Django migration files backup (optional - uncomment if you don't want migration backups)
+# migrations/*.backup/
+
+# Media & Static Files
+media/
+media/*
+!media/.gitkeep
+staticfiles/
+static/*
+!static/.gitkeep
+
+# Test artifacts in documents folder
+backend/documents/*.pdf
+backend/documents/*.txt
+backend/documents/*.docx
+backend/documents/*.png
+
+# _____________________________
+# Environment Variables
+# _____________________________
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.development
+!.env.production
+
+# _____________________________
+# Testing / Coverage
+# _____________________________
+coverage/
+htmlcov/
+.coverage
+.coverage.*
+.coverage.*
+.pytest_cache/
+.playwright/
+
+# _____________________________
+# Logs
+# _____________________________
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.grunt
+webpack-bundle.js.map
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# _____________________________
+# Node.js / Next.js (Frontend)
+# _____________________________
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+build/
+.next/server/
+.next/static/
+.next/cache/
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+*.tsbuildinfo.local
+
+# SWC files
+.next/cache/*
+!next.config.ts
+
+# Files created by create-next-app
+**/*.log
+
+# Local Bitbucket files
+.bitbucket/
+
+# Local development files
+*.local
+
+# _____________________________
+# Embedding / Model Cache
+# _____________________________
+models/
+hf_cache/
+vectorstore/
+*.bin
+*.safetensors
+*.gguf
+*.pth
+*.pt
+*.ckpt
+
+# _____________________________
+# Docker
+# _____________________________
+.dockerignore
+.docker/
+.docker-compose.override.yml
+
+# ______________
+# IDE / Editor
+# ______________
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# ..................................
+# OS Specific
+# ..................................
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ..................................
+# Secrets / Certificates
+# ..................................
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+secrets.json
+
+# ..................................
+# Temporary / Scratch Files
+# ..................................
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.backup
+
+# ..................................
+# Python Cache
+# ..................................
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.dmypy.json
+
+# ================================
+# ocr
+# ================================
+backend/poppler_bin/
+backend/hf_cache/
+backend/vectorstore/
+backend/documents/ocr_page_*.png
+.workbuddy-ai/
+
+backend/documents/*.pdf
+backend/documents/*.docx
+
+# ================================
+# Agents
+# ================================
+.opencode
+backend/celerybeat-schedule*
+# ..................................
+# Other
+# ..................................
+.opencode
+next-env.d.ts
+opencode.jsonc
+# Local evaluation artifacts and user-supplied datasets
+backend/evaluation/data/
+backend/evaluation/results/
